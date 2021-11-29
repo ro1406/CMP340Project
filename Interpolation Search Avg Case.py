@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Nov 26 03:05:40 2021
+Created on Tue Nov 30 00:14:10 2021
 
 @author: rohan
 """
@@ -8,6 +8,7 @@ import time
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+
 def interpolationSearch(arr, term):
     count = 0
     n = len(arr) - 1
@@ -32,25 +33,19 @@ def interpolationSearch(arr, term):
     if l > r:
         return count+1
 
-
 t0=time.time()
-
 sizes=[]
 ops=[]
-graph=[0]
-
 MAGNITUDE=int(1e4)
-
-for i in range(1,100+1): # 1*10^5 to 100 *10^5 Elements
-    #arr=np.arange(1,i*MAGNITUDE+1,dtype='int64') # Faster than using list compehensions
-    #arr=np.geomspace(1,i*MAGNITUDE,1000,dtype='int64')
-    arr=[x**2 for x in range(1,i*MAGNITUDE+1)]
-    #print("Len(arr)=",len(arr))
-    arr[-1]*=10000
-    graph.append(i*MAGNITUDE/10+30000)
-    l,r=0,i*MAGNITUDE-1
-    x=arr[-2]                   #int(len(arr)/(math.floor(math.log(len(arr),2))+1))
-    t=interpolationSearch(arr,x)
+for i in range(1,100+1): # 1*10^4 to 100 *10^4 Elements
+    arr=np.arange(1,i*MAGNITUDE+1) # Faster than using list compehensions
+    
+    #Try to search for 10 random values, and average the counts:
+    total=0
+    for j in range(100):
+        x=np.random.randint(1,i*MAGNITUDE+1)
+        total+=interpolationSearch(arr,x)
+    t=total/100
     ops.append(t)
     sizes.append(i)
     del arr #Memory reasons
@@ -58,25 +53,24 @@ for i in range(1,100+1): # 1*10^5 to 100 *10^5 Elements
 t=time.time()-t0
 print("Testing done! Time Taken:",t)
 
-log=lambda x:math.log(math.log(x+1,2),2)
-logGraph=np.vectorize(log)(np.arange(1,int(1e7),MAGNITUDE))
+log=lambda x:math.log(math.log(x+1,2),2)+1
+logGraph=np.vectorize(log)(np.arange(1,int(1e6),MAGNITUDE))
 
 plt.plot(sizes,ops,'r')
-plt.xlabel(f"Size of array (n) *{MAGNITUDE}")
-plt.ylabel("Number of operations")
-plt.title("Size of array VS. Num operations EXPERIMENTAL")
-plt.show()
-
-
-plt.plot(sizes,ops,'r')
-plt.plot(graph,'b')
-plt.legend(['Experimental','Theoretical'])
-plt.xlabel(f"Size of array (n) *{MAGNITUDE}")
+plt.xlabel("Size of array (n) *10^4")
 plt.ylabel("Number of operations")
 plt.title("Size of array VS. Num operations")
 plt.show()
 
-myfile=open("IS 100M every 100K - Smooth.csv",'w')
+plt.plot(sizes,ops,'r')
+plt.plot(logGraph,'b')
+plt.legend(['Experimental','Theoretical'])
+plt.xlabel("Size of array (n) *10^4")
+plt.ylabel("Number of operations")
+plt.title("Size of array VS. Num operations")
+plt.show()
+
+myfile=open("BS 1M every 10K Avg Case - Smooth.csv",'w')
 for i in range(len(ops)):
     myfile.write(str(sizes[i])+","+str(ops[i])+"\n")
 myfile.close()
