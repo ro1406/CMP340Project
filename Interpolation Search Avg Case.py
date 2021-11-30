@@ -38,14 +38,15 @@ sizes=[]
 ops=[]
 MAGNITUDE=int(1e4)
 for i in range(1,100+1): # 1*10^4 to 100 *10^4 Elements
-    arr=np.arange(1,i*MAGNITUDE+1) # Faster than using list compehensions
-    
+    arr=[x**8 for x in range(1,i*MAGNITUDE+1)]
+    #print("Len(arr)=",len(arr))
+    #arr[-1]*=10000
     #Try to search for 10 random values, and average the counts:
     total=0
-    for j in range(100):
+    for j in range(1000):
         x=np.random.randint(1,i*MAGNITUDE+1)
         total+=interpolationSearch(arr,x)
-    t=total/100
+    t=total/1000
     ops.append(t)
     sizes.append(i)
     del arr #Memory reasons
@@ -53,7 +54,7 @@ for i in range(1,100+1): # 1*10^4 to 100 *10^4 Elements
 t=time.time()-t0
 print("Testing done! Time Taken:",t)
 
-log=lambda x:math.log(math.log(x+1,2),2)+1
+log=lambda x:math.log(math.log(x+1,2),2)
 logGraph=np.vectorize(log)(np.arange(1,int(1e6),MAGNITUDE))
 
 plt.plot(sizes,ops,'r')
@@ -70,7 +71,7 @@ plt.ylabel("Number of operations")
 plt.title("Size of array VS. Num operations")
 plt.show()
 
-myfile=open("BS 1M every 10K Avg Case - Smooth.csv",'w')
+myfile=open("IS 1M every 10K Avg Case - Smooth.csv",'w')
 for i in range(len(ops)):
     myfile.write(str(sizes[i])+","+str(ops[i])+"\n")
 myfile.close()
