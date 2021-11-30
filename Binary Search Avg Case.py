@@ -12,7 +12,7 @@ import numpy as np
 def binarySearch(arr, l, r, x):
     counter=0
     while l <= r:
-       	mid = int((l+r) / 2)+1;
+       	mid = int((l+r) // 2);
         counter+=1
        	if arr[mid] == x:
              	return counter
@@ -20,7 +20,7 @@ def binarySearch(arr, l, r, x):
            	l = mid + 1
        	else:
            	r = mid - 1        
-    return -1
+    return counter
 
 t0=time.time()
 
@@ -31,10 +31,12 @@ for i in range(1,1000+1): # 1*10^5 to 1000 *10^5 Elements
     l,r=0,i*100000
     #Try to search for 10 random values, and average the counts:
     total=0
-    for j in range(10):
+    #print(f"Doing {i} right now...")
+    for j in range(100):
         x=np.random.randint(1,i*100000+1)
+        #print(f"    Inside {i}, doing {j+1}. Searching for {x}")
         total+=binarySearch(arr,l,r,x)
-    t=total/10
+    t=total/100
     ops.append(t)
     sizes.append(i)
     del arr #Memory reasons
