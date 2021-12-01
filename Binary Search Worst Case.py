@@ -12,7 +12,7 @@ import numpy as np
 def binarySearch(arr, l, r, x):
     counter=0
     while l <= r:
-       	mid = int((l+r) / 2)+1;
+       	mid = int((l+r) / 2)+1
         counter+=1
        	if arr[mid] == x:
              	return counter

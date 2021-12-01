@@ -36,9 +36,13 @@ def interpolationSearch(arr, term):
 t0=time.time()
 sizes=[]
 ops=[]
-MAGNITUDE=int(1e4)
-for i in range(1,100+1): # 1*10^4 to 100 *10^4 Elements
-    arr=[x**8 for x in range(1,i*MAGNITUDE+1)]
+MAGNITUDE=int(1e5)
+
+square=lambda x: math.pow(x,8)
+
+for i in range(1,100+1): # 1*10^4 to 100 *10^5 Elements
+    #arr=[x**8 for x in range(1,i*MAGNITUDE+1)]
+    arr=np.vectorize(square)(np.arange(1,i*MAGNITUDE+1))
     #print("Len(arr)=",len(arr))
     #arr[-1]*=10000
     #Try to search for 10 random values, and average the counts:
@@ -54,11 +58,11 @@ for i in range(1,100+1): # 1*10^4 to 100 *10^4 Elements
 t=time.time()-t0
 print("Testing done! Time Taken:",t)
 
-log=lambda x:math.log(math.log(x+1,2),2)
-logGraph=np.vectorize(log)(np.arange(1,int(1e6),MAGNITUDE))
+log=lambda x:math.log(math.log(x+1,2),2)+2.2
+logGraph=np.vectorize(log)(np.arange(1,int(1e7),MAGNITUDE))
 
 plt.plot(sizes,ops,'r')
-plt.xlabel("Size of array (n) *10^4")
+plt.xlabel("Size of array (n) *10^5")
 plt.ylabel("Number of operations")
 plt.title("Size of array VS. Num operations")
 plt.show()
@@ -66,7 +70,7 @@ plt.show()
 plt.plot(sizes,ops,'r')
 plt.plot(logGraph,'b')
 plt.legend(['Experimental','Theoretical'])
-plt.xlabel("Size of array (n) *10^4")
+plt.xlabel("Size of array (n) *10^5")
 plt.ylabel("Number of operations")
 plt.title("Size of array VS. Num operations")
 plt.show()
