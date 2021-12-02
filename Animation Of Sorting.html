@@ -1,0 +1,247 @@
+
+<!--
+
+work will be done in div with id array and result will be in div with id tex
+the form should have two buttons one to call Binary Search and the other for the Interpolation Search.
+
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport"
+		content="width=device-width, initial-scale=1.0" />
+	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+</head>
+
+<body>
+	<br />
+    <div style = "text-align: center">
+        <p class="header">Binary Search and Interpolation Search Visualization</p>
+	    <p>Size: <input type="number" id = "size" name="inputSize" /></p>
+        <p>Cap for Random Generated Numbers: <input type="number" id = "max" name="maxSize" /></p>
+        <p>Distribution: <select name="Distribution" id="distribution">
+            <option value="Linear">Linear</option>
+            <option value="Quadratic">Quadratic</option>
+            <option value="Exponential">Exponential</option>
+        </select></p>
+        <button id = "changeSize" onClick="generatearray()">Generate Array</button>
+    </div>    
+	<div id="array"></div>
+    <canvas id="myChart" width="100" height="100" style="margin: 25px 50px 75px 100px;"></canvas>
+	<br /><br />
+
+	<div style="text-align: center">
+	<label for="fname">
+		Number to be Searched:
+	</label>
+	<input type="text" id="fname"
+			name="fname" />
+	<br /><br />
+	<button id="btn" onclick="BinarySearch()">Apply Binary Search</button>
+    <button id="btn" onclick="InterpolationSearch()">Apply Interpolation Search</button>
+    
+	<br />
+	<br />
+	<div id="text"></div>
+	</div>
+
+    <script>
+        const ctx = document.getElementById('myChart');
+        var myChart;
+        var arr = [];
+        var xVals = [];
+        var backgrounds = [];
+        function generatearray() {
+            
+        // Creating an array
+        var max = parseInt(document.getElementById("max").value);  
+        var size = parseInt(document.getElementById("size").value);
+        var select = document.getElementById("distribution").value;
+        
+        if(isNaN(size)){size = 20;}
+        if(isNaN(max)){max = 100;}
+        
+        arr = [];
+        xVals = [];
+        backgrounds = [];    
+        if(myChart!=undefined)
+        {
+            myChart.destroy();
+        }    
+
+
+        // Filling array with random values
+        for (var i = 0; i < size; i++) {
+            // Return a value from 1 to 100 (both inclusive)
+            var val;
+            if(select === "Linear"){
+                val = Number(Math.ceil(Math.random() * max));
+                
+               
+            }
+
+            else if(select === "Quadratic"){
+                val = Number(Math.ceil(Math.random() * max * max));
+                
+            }
+            else {
+                val = i;
+                if(i==size-1){val = 100;}
+            }
+            arr.push(val);
+            xVals.push(i);
+            backgrounds.push("#6b5b95");
+        
+        }
+
+        // Sorting Array in ascending order
+        arr.sort(function (a, b) {
+            return a - b;
+        });
+        
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: xVals,
+                datasets: [{
+                    label: 'Random Numbers Generated',
+                    data: arr,
+                    backgroundColor: backgrounds,
+                    
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+    //backgrounds[i] = rgb(255, 99, 132);
+    //myChart.update();
+    async function BinarySearch(delay = 1500) {
+       
+        var output = document.getElementById("text");
+        //Extracting the value of the element to be searched
+        var num = document.getElementById("fname").value;
+
+        //Colouring all the blocks voilet
+        for (var i = 0; i < backgrounds.length; i += 1) {
+            backgrounds[i] = "#6b5b95";
+        }
+        myChart.update();
+
+        output.innerText = "";
+
+        // Binary Search Algorithm
+
+        var start = 0;
+        var end = arr.length-1;
+        var flag = 0;
+        while (start <= end) {
+            //Middle index
+            var mid = Math.floor((start + end) / 2);
+            backgrounds[mid] = "#FF4949";
+            myChart.update();
+            //Value at mid index
+            var value = arr[mid];
+
+            // To wait for .1 sec
+            await new Promise((resolve) =>
+            setTimeout(() => {
+                resolve();
+            }, 1000)
+            );
+
+            //Current element is equal to the element
+            //entered by the user
+            if (value == num) {
+                output.innerText = "Element Found";
+                backgrounds[mid] = 'rgb(0, 255, 0)';
+                myChart.update();
+                flag = 1;
+                break;
+            }
+            //Current element is greater than the element
+            //entered by the user
+            else if (value > num) {
+                end = mid - 1;
+                
+            } else {
+                start = mid + 1;
+                
+            }
+        }
+        if (flag === 0) {
+            output.innerText = "Element Not Found";
+        }
+    }
+
+
+
+     async function InterpolationSearch(delay = 1500) {
+       
+       var output = document.getElementById("text");
+       //Extracting the value of the element to be searched
+       var num = document.getElementById("fname").value;
+
+       //Colouring all the blocks voilet
+       for (var i = 0; i < backgrounds.length; i += 1) {
+           backgrounds[i] = "#6b5b95";
+       }
+       myChart.update();
+
+       output.innerText = "";
+
+       // Interpolation Search Algorithm
+
+       var low = 0;
+       var high = arr.length-1;
+       var flag = 0;
+       var mid;
+       while ((arr[high] != arr[low]) && (num >= arr[low]) && (num <= arr[high])) {
+           //Middle index
+            backgrounds[mid] = "#FF4949";
+            myChart.update();
+            await new Promise((resolve) =>
+            setTimeout(() => {
+                resolve();
+            }, 1000)
+            );
+            mid = low + parseInt(parseFloat((high-low) / (arr[high]-arr[low])) * (num-arr[low]));           
+            if(arr[mid] == num)
+            {
+                output.innerText = "Element Found";
+                backgrounds[mid] = 'rgb(0, 255, 0)';
+                myChart.update();
+                flag = 1;
+                break;
+            }
+            else if(arr[mid] < num)
+            {
+                low = mid + 1;        
+            }
+            else
+            {
+                high = mid - 1;
+            }
+        }
+               
+           
+          
+       if (flag === 0) {
+           output.innerText = "Element Not Found";
+       }
+   }
+
+
+
+
+    </script>
+</body>
+</html>
